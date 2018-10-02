@@ -1,0 +1,7 @@
+﻿@if(User.IsInRole("Admin")){
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+else
+{
+    Layout = "~/Views/Shared/_CashierLayout.cshtml";
+}
