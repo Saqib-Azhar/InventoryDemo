@@ -1,66 +1,45 @@
-﻿@model DemoInven.Models.Stock
+﻿@model IEnumerable<DemoInven.Models.StockDetail>
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>Stock</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.StockName)
-        </dt>
+<table class="table" style="border:double">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.ProductDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QuantityAdded)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Stock.StockName)
+        </th>
+        <th></th>
+    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.StockName)
-        </dd>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Product.ProductName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Product.ProductDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuantityAdded)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Stock.StockName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", "StockDetails", new { id=item.Id }) 
+        </td>
+    </tr>
+}
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StockDescription)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StockDescription)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedOn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedOn)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsDelete)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsDelete)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AspNetUser.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AspNetUser.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Supplier.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Supplier.Name)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+</table>

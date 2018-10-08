@@ -4,12 +4,12 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Products</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { @class = "btn btn-primary form-control" })
 </p>
-<table class="table">
+<table class="table" style="border:double">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.ProductName)
@@ -20,9 +20,9 @@
         <th>
             @Html.DisplayNameFor(model => model.CreatedOn)
         </th>
-        <th>
+        @*<th>
             @Html.DisplayNameFor(model => model.IsDelete)
-        </th>
+        </th>*@
         @*<th>
             @Html.DisplayNameFor(model => model.BarCode)
         </th>*@
@@ -52,10 +52,10 @@
         <td>
             @Html.DisplayFor(modelItem => item.CreatedOn)
         </td>
-        <td>
+        @*<td>
             @Html.DisplayFor(modelItem => item.IsDelete)
         </td>
-        @*<td>
+        <td>
             @Html.DisplayFor(modelItem => item.BarCode)
         </td>*@
         <td>

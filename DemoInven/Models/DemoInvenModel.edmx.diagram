@@ -16,21 +16,24 @@
         <EntityTypeShape EntityType="Model.Product" Width="1.5" PointX="7.5" PointY="10.5" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Stock" Width="1.5" PointX="7.5" PointY="15" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.StockDetail" Width="1.5" PointX="9.75" PointY="16.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Supplier" Width="1.5" PointX="5.25" PointY="20.5" IsExpanded="true" />
         <AssociationConnector Association="Model.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Categories_AspNetUsers" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Orders_AspNetUsers" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Products_AspNetUsers" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Stock_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="Model.FK_Suppliers_AspNetUsers" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Products_Categories" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_OrderDetails_Orders" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_OrderDetails_Products" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_StockDetails_Products" ManuallyRouted="false" />
-        <AssociationConnector Association="Model.FK_Stock_Suppliers" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_StockDetails_Stock" ManuallyRouted="false" />
         <AssociationConnector Association="Model.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Model.Notification" Width="1.5" PointX="5.625" PointY="1" />
+        <EntityTypeShape EntityType="Model.NotificationStatus" Width="1.5" PointX="3.375" PointY="1.375" />
+        <AssociationConnector Association="Model.FK_Notifications_Statuses" />
+        <EntityTypeShape EntityType="Model.Supplier" Width="1.5" PointX="5.25" PointY="17.625" />
+        <AssociationConnector Association="Model.FK_Suppliers_AspNetUsers" />
+        <AssociationConnector Association="Model.FK_Stock_Suppliers" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

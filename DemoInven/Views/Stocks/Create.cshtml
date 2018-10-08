@@ -1,82 +1,319 @@
-﻿@model DemoInven.Models.Stock
+﻿@using Microsoft.AspNet.Identity
 
-@{
-    ViewBag.Title = "Create";
-}
-
-<h2>Create</h2>
-
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Stock</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.StockName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StockName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StockName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StockDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.StockDescription, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.StockDescription, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, "CreatedBy", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedOn, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedOn, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedOn, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsDelete, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsDelete)
-                    @Html.ValidationMessageFor(model => model.IsDelete, "", new { @class = "text-danger" })
+<div class="container" style="padding:30px">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-4">
+                    Stock Name: <input type="text" class="form-control" id="StockName" /><br />
+                    Supplier: @Html.DropDownList("SupplierId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="col-md-4">
+                    Stock Description: <textarea id="StockDescription" placeholder="Customer Name" class="form-control" style="height:108px;width:100%"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        Admin: <input type="text" disabled id="AdminId" value="@User.Identity.Name" class="form-control" />
+                        <br />
+                        Time: <input type="text" disabled id="CurrentTime" class="form-control" />
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SupplierId, "SupplierId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SupplierId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
+        <div class="panel-body">
+            <div id="Products">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Product Name:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Product Description:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Category:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Quantity:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Price:</label>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row Product" id="Product1">
+                    <div class="col-md-3">
+                        <input type="text" id="ProductValue1" onchange="UpdateQuantity(1)" placeholder="Search / Enter New Name" style="position:unset" class="form-control ui-autocomplete" /><input hidden id='SelectedProductId1'>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" id="Description1" class="form-control" placeholder="Description"/>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control", id="Category1" })
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="Quantity1" class="form-control" min="1" value="0" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="Price1" class="form-control" min="1" value="0"/>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-sm btn-danger form-control" id="RemoveProduct1" onclick="RemoveProduct('1')">X</button>
+                    </div>
+                </div><hr id="HrProduct1" />
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-2 pull-left">
+                    <button class="btn btn-primary form-control" id="AddNewProduct" onclick="AddProductRow()">Add Product</button>
+                </div>
+                <div class="col-md-2 pull-right">
+                    <button class="btn btn-primary form-control" id="SubmitForm" onclick="SubmitForm()">Add Stock</button>
+                </div>
             </div>
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
+<input type="number" value="1" hidden id="TotalProducts" />
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+<script>
+
+    $(document).ready(function () {
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('CurrentTime').value =
+            h + ":" + m + ":" + s;
+            var t = setTimeout(startTime, 500);
+        }
+        function checkTime(i) {
+            if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+            return i;
+        }
+
+        startTime();
+        $("#ProductValue1").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Products/SearchProduct",
+                    type: "POST",
+                    dataType: "json",
+                    data: { query: $("#ProductValue1").val() },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                //$('#SelectedProductId1').val(item.Id);
+                                return { label: item.Name, value: item.Name };
+                            }));
+
+                    }
+                });
+
+
+            },
+            messages: {
+                noResults: "",
+                results: function (count) {
+                    return count + (count > 1 ? ' results' : ' result ') + ' found';
+                }
+            }
+        });
+    });
+
+
+    function AddProductRow()
+    {
+        var totalProducts = $("#TotalProducts").val();
+        var newProductNo = parseInt(totalProducts) + 1;
+        var removalFunc = "RemoveProduct('Product" + newProductNo + "')";
+        var CategoriesAvailable = @Html.Raw(Json.Encode(@ViewBag.CategoryId));
+        var categoryHtml = '<select id="Category'+newProductNo+'" class="form-control">';
+        $.each(CategoriesAvailable, function (s) {
+            categoryHtml = categoryHtml + '<option value="'+this.Value+'">'+this.Text+'</option>';
+        });
+        categoryHtml = categoryHtml +'</select>';
+        $("#Products").append("<div class='row Product' id='Product" + newProductNo + "'>" +
+                    "<div class='col-md-3'>" +
+                        "<input type='text' id='ProductValue" + newProductNo + "' onchange='UpdateQuantity(" + newProductNo + ")' placeholder='Search / Enter New Name' style='position:unset' class='form-control ui-autocomplete' /><input hidden id='SelectedProductId" + newProductNo + "'>" +
+                    "</div>" +
+                    "<div class='col-md-2'>" +
+                        "<input type='text' id='Description" + newProductNo + "' class='form-control' placeholder='Description'/>" +
+                    "</div>" +
+                    "<div class='col-md-2'>" +
+                        categoryHtml +
+                    "</div>" +
+                    "<div class='col-md-2'>" +
+                        "<input type='number' id='Quantity" + newProductNo + "' class='form-control' min='1' value='0'  />" +
+                    "</div>" +
+                    "<div class='col-md-2'>" +
+                        "<input type='number' id='Price" + newProductNo + "' class='form-control' min='1' value='0'/>" +
+                    "</div>" +
+                    "<div class='col-md-1'>" +
+                        "<button class='btn btn-sm btn-danger form-control' id='RemoveProduct" + newProductNo + "' onclick='RemoveProduct(" + newProductNo + ")'>X</button>" +
+                    "</div>" +
+            "</div><hr id='HrProduct" + newProductNo + "'>");
+        $("#TotalProducts").val(newProductNo);
+
+
+        $("#ProductValue" + newProductNo).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Products/SearchProduct",
+                    type: "POST",
+                    dataType: "json",
+                    data: { query: $("#ProductValue" + newProductNo).val() },
+                    success: function (data) {
+                        response($.map(data,
+                            function (item) {
+                                return { label: item.Name, value: item.Name };
+                            }));
+
+                    }
+                });
+
+
+            },
+            messages: {
+                noResults: "",
+                results: function (count) {
+                    return count + (count > 1 ? ' results' : ' result ') + ' found';
+                }
+            }
+        });
+
+
+
+    }
+
+
+
+    function RemoveProduct(id)
+    {
+        var DetailCounter = parseInt(id);
+
+        var totalPrice = parseInt($("#TotalPrice").val()) - parseInt($("#Price" + DetailCounter).val());
+        $("#TotalPrice").val(totalPrice);
+        $("#Product" + id).remove();
+        $("#HrProduct" + id).remove();
+    }
+
+    function SubmitForm()
+    {
+       
+        var DetailCounter = 1;
+        var ProductsDetails = [];
+        $(".Product").each(function () {
+            var DetailCounter = $(this).attr("id");
+            DetailCounter = parseInt(DetailCounter.replace(/[^\d.]/g, ''));
+
+            productDetail = {
+                Id: $("#SelectedProductId" + DetailCounter).val(),
+                ProductDescription: $("#Description" + DetailCounter).val(),
+                ProductName: $("#ProductValue" + DetailCounter).val().split("-")[1],
+                Price: $("#Price" + DetailCounter).val(),
+                Quantity: $("#Quantity" + DetailCounter).val(),
+                CategoryId: $("#Category"+DetailCounter).val()
+            }
+          
+
+            ProductsDetails.push(productDetail);
+        });
+        
+        StockDetails = {
+            Id: '',
+            StockName: $("#StockName").val(),
+            StockDescription: $("#StockDescription").val(),
+            SupplierId: $("#SupplierId").val()
+        }
+          
+        $.ajax({
+            url: "/Stocks/AddStock",
+            type: "POST",
+            dataType: "json",
+            data: { StockDetails: StockDetails, ProductsDetails: ProductsDetails },
+            success: function (data) {
+                    alert(data);
+                    window.location.reload();
+
+            }
+        });
+    }
+
+
+
+
+    function UpdateQuantity(item)
+    {
+        var strs = $("#ProductValue" + item).val().split("-");
+        var prodId = parseInt(strs[0]);
+        $('#SelectedProductId' + item).val(prodId);
+       $.ajax({
+            url: "/Products/GetPrice",
+            type: "POST",
+            dataType: "json",
+            data: { Id: prodId },
+            success: function (data) {
+                if (data.Quantity > 0)
+                {
+                    var quantity = 1;//(parseInt($("#Quantity" + item).val()) == 0) ? 1 : (parseInt($("#Quantity" + item).val()) + 1);
+                    $("#Quantity" + item).val(quantity);
+                    $("#Price" + item).val(data.Price * quantity);
+                    $("#InStock" + item).val(data.Quantity);
+                    $("#Quantity" + item).attr("max", data.Quantity);
+                    $("#Quantity" + item).removeAttr("disabled");
+                    $("#Category"+item).val(data.CategoryId);
+                    $("#Description"+item).val(data.ProductDescription);
+
+                }
+                else
+                {
+                    alert("Product out of stock!");
+                    $("#Price" + item).val(0);
+                    $("#InStock" + item).val(0);
+                    $("#Quantity" + item).attr("max", 0);
+
+                }
+                var totalPrice = 0;
+                $(".Product").each(function () {
+                    var DetailCounter = $(this).attr("id");
+                    DetailCounter = parseInt(DetailCounter.replace(/[^\d.]/g, ''));
+                    totalPrice = totalPrice + parseInt($("#Price" + DetailCounter).val());
+
+                });
+                $("#TotalPrice").val(totalPrice);
+
+            }
+        });
+    }
+
+
+
+    function UpdatePrice(id)
+    {
+        var strs = $("#ProductValue" + id).val().split("-");
+        var prodId = parseInt(strs[0]);
+        $.ajax({
+            url: "/Products/GetPrice",
+            type: "POST",
+            dataType: "json",
+            data: { Id: prodId },
+            success: function (data) {debugger;
+                var currentPrice = parseInt($("#Price" + id).val());
+                var currentQuantity = parseInt($("#Quantity" + id).val());
+                var origPrice = data.Price;
+                var netPrice = origPrice * currentQuantity;
+                var totalSubPrice = parseInt($("#TotalPrice").val()) - currentPrice;
+                $("#Category"+id).val(data.CategoryId);
+                $("#Price" + id).val(netPrice);
+                $("#Description"+id).val(data.ProductDescription);
+                $("#TotalPrice").val(totalSubPrice + netPrice);
+            }
+        });
+    }
+
+</script>

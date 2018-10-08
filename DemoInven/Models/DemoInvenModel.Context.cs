@@ -36,6 +36,8 @@ namespace DemoInven.Models
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Stock> Stocks { get; set; }
         public virtual DbSet<StockDetail> StockDetails { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationStatus> NotificationStatuses { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
     }
 }

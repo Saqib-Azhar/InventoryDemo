@@ -1,58 +1,64 @@
-﻿@model DemoInven.Models.Order
+﻿@model IEnumerable<DemoInven.Models.OrderDetail>
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Order Details</h2>
+<table class="table" style="border:double">
+    <tr>
+        <td><b>Buyer</b></td>
+        <td>@Model.First().Order.BuyerName</td>
+        <td><b>Bought At</b></td>
+        <td>@Model.First().Order.BoughtAt</td>
+    </tr>
+    <tr>
+        <td><b>Total Price</b></td>
+        <td>@Model.First().Order.TotalPrice</td>
+        <td><b>Cashier</b></td>
+        <td>@Model.First().Order.AspNetUser.Email</td>
+    </tr>
 
-<div>
-    <h4>Order</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.BuyerName)
-        </dt>
+</table>
+<table class="table" style="border:double">
+    <tr>
+        <th>
+            @Html.DisplayName("Product Id")
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Product.ProductDescription)
+        </th>
+    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.BuyerName)
-        </dd>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.ProductDescription)
+            </td>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BoughtAt)
-        </dt>
+        </tr>
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.BoughtAt)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-
-        @*<dt>
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>*@
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AspNetUser.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AspNetUser.Email)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+</table>

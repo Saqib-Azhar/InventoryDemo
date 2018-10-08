@@ -11,7 +11,8 @@ namespace DemoInven.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class Supplier
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,10 +23,17 @@ namespace DemoInven.Models
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Desription { get; set; }
+        public string Contact { get; set; }
+        public string Address { get; set; }
+        [DisplayName("Company Email")]
+        public string EmailId { get; set; }
+        public Nullable<bool> IsDelete { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        [DisplayName("Contact Person")]
+        public string ContactPerson { get; set; }
+        [DisplayName("Contact Designation")]
+        public string ContactPersonDesignation { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

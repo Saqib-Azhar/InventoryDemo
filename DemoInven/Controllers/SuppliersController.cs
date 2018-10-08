@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DemoInven.Models;
+using Microsoft.AspNet.Identity;
 
 namespace DemoInven.Controllers
 {
@@ -48,10 +49,12 @@ namespace DemoInven.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Desription,CreatedBy,CreatedOn,IsDelete")] Supplier supplier)
+        public ActionResult Create([Bind(Include = "Id,Name,Contact,Address,EmailId,IsDelete,CreatedBy,CreatedOn,ContactPerson,ContactPersonDesignation")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {
+                supplier.CreatedBy = User.Identity.GetUserId();
+                supplier.CreatedOn = DateTime.Now;
                 db.Suppliers.Add(supplier);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -82,7 +85,7 @@ namespace DemoInven.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Desription,CreatedBy,CreatedOn,IsDelete")] Supplier supplier)
+        public ActionResult Edit([Bind(Include = "Id,Name,Contact,Address,EmailId,IsDelete,CreatedBy,CreatedOn,ContactPerson,ContactPersonDesignation")] Supplier supplier)
         {
             if (ModelState.IsValid)
             {

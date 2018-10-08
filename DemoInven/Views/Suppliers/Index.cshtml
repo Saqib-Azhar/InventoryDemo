@@ -4,27 +4,39 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Suppliers</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+<table class="table" style="border:double">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Desription)
+            @Html.DisplayNameFor(model => model.Contact)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EmailId)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.IsDelete)
+        </th>*@
         <th>
             @Html.DisplayNameFor(model => model.CreatedOn)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IsDelete)
+            @Html.DisplayNameFor(model => model.ContactPerson)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AspNetUser.Email)
+            @Html.DisplayNameFor(model => model.ContactPersonDesignation)
+        </th>
+        <th>
+            @Html.DisplayName("Added By")
         </th>
         <th></th>
     </tr>
@@ -35,21 +47,36 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Desription)
+            @Html.DisplayFor(modelItem => item.Contact)
         </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EmailId)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.IsDelete)
+        </td>*@
         <td>
             @Html.DisplayFor(modelItem => item.CreatedOn)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsDelete)
+            @Html.DisplayFor(modelItem => item.ContactPerson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactPersonDesignation)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.AspNetUser.Email)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Delete", "Delete", new { @class = "btn btn-danger", id =item.Id })*@
+
+            <a href="/Suppliers/Delete/@item.Id"class="btn btn-danger">Delete</a>
+
         </td>
     </tr>
 }

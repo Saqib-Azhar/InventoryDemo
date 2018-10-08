@@ -61,8 +61,8 @@
     <NavigationProperty Name="Orders" Relationship="Self.FK_Orders_AspNetUsers" FromRole="AspNetUsers" ToRole="Orders" />
     <NavigationProperty Name="Products" Relationship="Self.FK_Products_AspNetUsers" FromRole="AspNetUsers" ToRole="Products" />
     <NavigationProperty Name="Stocks" Relationship="Self.FK_Stock_AspNetUsers" FromRole="AspNetUsers" ToRole="Stock" />
-    <NavigationProperty Name="Suppliers" Relationship="Self.FK_Suppliers_AspNetUsers" FromRole="AspNetUsers" ToRole="Supplier" />
     <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+    <NavigationProperty Name="Suppliers" Relationship="Model.FK_Suppliers_AspNetUsers" FromRole="AspNetUser" ToRole="Supplier" />
   </EntityType>
   <EntityType Name="Category">
     <Key>
@@ -133,8 +133,8 @@
     <Property Name="IsDelete" Type="Boolean" />
     <Property Name="SupplierId" Type="Int32" />
     <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Stock_AspNetUsers" FromRole="Stock" ToRole="AspNetUsers" />
-    <NavigationProperty Name="Supplier" Relationship="Self.FK_Stock_Suppliers" FromRole="Stock" ToRole="Supplier" />
     <NavigationProperty Name="StockDetails" Relationship="Self.FK_StockDetails_Stock" FromRole="Stock" ToRole="StockDetails" />
+    <NavigationProperty Name="Supplier" Relationship="Model.FK_Stock_Suppliers" FromRole="Stock" ToRole="Supplier" />
   </EntityType>
   <EntityType Name="StockDetail">
     <Key>
@@ -146,19 +146,6 @@
     <Property Name="QuantityAdded" Type="Int32" />
     <NavigationProperty Name="Product" Relationship="Self.FK_StockDetails_Products" FromRole="StockDetails" ToRole="Products" />
     <NavigationProperty Name="Stock" Relationship="Self.FK_StockDetails_Stock" FromRole="StockDetails" ToRole="Stock" />
-  </EntityType>
-  <EntityType Name="Supplier">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="Desription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-    <Property Name="IsDelete" Type="Boolean" />
-    <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Suppliers_AspNetUsers" FromRole="Supplier" ToRole="AspNetUsers" />
-    <NavigationProperty Name="Stocks" Relationship="Self.FK_Stock_Suppliers" FromRole="Supplier" ToRole="Stock" />
   </EntityType>
   <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
     <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -236,18 +223,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Suppliers_AspNetUsers">
-    <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
-    <End Role="Supplier" Type="Self.Supplier" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="AspNetUsers">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Supplier">
-        <PropertyRef Name="CreatedBy" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_Products_Categories">
     <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
     <End Role="Products" Type="Self.Product" Multiplicity="*" />
@@ -296,18 +271,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Stock_Suppliers">
-    <End Role="Supplier" Type="Self.Supplier" Multiplicity="0..1" />
-    <End Role="Stock" Type="Self.Stock" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Supplier">
-        <PropertyRef Name="Id" />
-      </Principal>
-      <Dependent Role="Stock">
-        <PropertyRef Name="SupplierId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_StockDetails_Stock">
     <End Role="Stock" Type="Self.Stock" Multiplicity="0..1" />
     <End Role="StockDetails" Type="Self.StockDetail" Multiplicity="*" />
@@ -336,7 +299,6 @@
     <EntitySet Name="Products" EntityType="Self.Product" />
     <EntitySet Name="Stocks" EntityType="Self.Stock" />
     <EntitySet Name="StockDetails" EntityType="Self.StockDetail" />
-    <EntitySet Name="Suppliers" EntityType="Self.Supplier" />
     <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -361,10 +323,6 @@
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
       <End Role="Stock" EntitySet="Stocks" />
     </AssociationSet>
-    <AssociationSet Name="FK_Suppliers_AspNetUsers" Association="Self.FK_Suppliers_AspNetUsers">
-      <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-      <End Role="Supplier" EntitySet="Suppliers" />
-    </AssociationSet>
     <AssociationSet Name="FK_Products_Categories" Association="Self.FK_Products_Categories">
       <End Role="Categories" EntitySet="Categories" />
       <End Role="Products" EntitySet="Products" />
@@ -381,10 +339,6 @@
       <End Role="Products" EntitySet="Products" />
       <End Role="StockDetails" EntitySet="StockDetails" />
     </AssociationSet>
-    <AssociationSet Name="FK_Stock_Suppliers" Association="Self.FK_Stock_Suppliers">
-      <End Role="Supplier" EntitySet="Suppliers" />
-      <End Role="Stock" EntitySet="Stocks" />
-    </AssociationSet>
     <AssociationSet Name="FK_StockDetails_Stock" Association="Self.FK_StockDetails_Stock">
       <End Role="Stock" EntitySet="Stocks" />
       <End Role="StockDetails" EntitySet="StockDetails" />
@@ -393,5 +347,94 @@
       <End Role="AspNetRoles" EntitySet="AspNetRoles" />
       <End Role="AspNetUsers" EntitySet="AspNetUsers" />
     </AssociationSet>
+    <EntitySet Name="Notifications" EntityType="Model.Notification" />
+    <EntitySet Name="NotificationStatuses" EntityType="Model.NotificationStatus" />
+    <AssociationSet Name="FK_Notifications_Statuses" Association="Model.FK_Notifications_Statuses">
+      <End Role="NotificationStatus" EntitySet="NotificationStatuses" />
+      <End Role="Notification" EntitySet="Notifications" />
+    </AssociationSet>
+    <EntitySet Name="Suppliers" EntityType="Model.Supplier" />
+    <AssociationSet Name="FK_Suppliers_AspNetUsers" Association="Model.FK_Suppliers_AspNetUsers">
+      <End Role="AspNetUser" EntitySet="AspNetUsers" />
+      <End Role="Supplier" EntitySet="Suppliers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Stock_Suppliers" Association="Model.FK_Stock_Suppliers">
+      <End Role="Supplier" EntitySet="Suppliers" />
+      <End Role="Stock" EntitySet="Stocks" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="Notification">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NotificationDetail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="GeneratedOn" Type="DateTime" Precision="3" />
+    <Property Name="IsOpened" Type="Boolean" />
+    <Property Name="IsDeleted" Type="Boolean" />
+    <Property Name="StatusId" Type="Int32" />
+    <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="NotificationStatus" Relationship="Model.FK_Notifications_Statuses" FromRole="Notification" ToRole="NotificationStatus" />
+  </EntityType>
+  <EntityType Name="NotificationStatus">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Notifications" Relationship="Model.FK_Notifications_Statuses" FromRole="NotificationStatus" ToRole="Notification" />
+  </EntityType>
+  <Association Name="FK_Notifications_Statuses">
+    <End Type="Model.NotificationStatus" Role="NotificationStatus" Multiplicity="0..1" />
+    <End Type="Model.Notification" Role="Notification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NotificationStatus">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Notification">
+        <PropertyRef Name="StatusId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Supplier">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Contact" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EmailId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="IsDelete" Type="Boolean" />
+    <Property Name="CreatedBy" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+    <Property Name="ContactPerson" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ContactPersonDesignation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="AspNetUser" Relationship="Model.FK_Suppliers_AspNetUsers" FromRole="Supplier" ToRole="AspNetUser" />
+    <NavigationProperty Name="Stocks" Relationship="Model.FK_Stock_Suppliers" FromRole="Supplier" ToRole="Stock" />
+  </EntityType>
+  <Association Name="FK_Suppliers_AspNetUsers">
+    <End Type="Model.AspNetUser" Role="AspNetUser" Multiplicity="0..1" />
+    <End Type="Model.Supplier" Role="Supplier" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AspNetUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Supplier">
+        <PropertyRef Name="CreatedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Stock_Suppliers">
+    <End Type="Model.Supplier" Role="Supplier" Multiplicity="0..1" />
+    <End Type="Model.Stock" Role="Stock" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Supplier">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Stock">
+        <PropertyRef Name="SupplierId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

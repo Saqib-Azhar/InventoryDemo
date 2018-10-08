@@ -4,13 +4,16 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Orders</h2>
 
-<p>
+@*<p>
     @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
+</p>*@
+<table class="table" style="border:double">
     <tr>
+        <th>
+            @Html.DisplayName("Id")
+        </th>
         <th>
             @Html.DisplayNameFor(model => model.BuyerName)
         </th>
@@ -24,21 +27,24 @@
             @Html.DisplayNameFor(model => model.IsDeleted)
         </th>*@
         <th>
-            @Html.DisplayNameFor(model => model.AspNetUser.Email)
+            @Html.DisplayName("Cashier")
         </th>
-        <th></th>
+        @*<th></th>*@
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.BuyerName)
+            <a href="/Orders/Details/@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.BoughtAt)
+            <a href="/Orders/Details/@item.Id">@Html.DisplayFor(modelItem => item.BuyerName)</a>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.TotalPrice)
+            <a href="/Orders/Details/@item.Id">@Html.DisplayFor(modelItem => item.BoughtAt)</a>
+        </td>
+        <td>
+            <a href="/Orders/Details/@item.Id"> @Html.DisplayFor(modelItem => item.TotalPrice)</a>
         </td>
         @*<td>
             @Html.DisplayFor(modelItem => item.IsDeleted)
@@ -46,11 +52,11 @@
         <td>
             @Html.DisplayFor(modelItem => item.AspNetUser.Email)
         </td>
-        <td>
+        @*<td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
+        </td>*@
     </tr>
 }
 

@@ -1,48 +1,77 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
+
+
+@*<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>*@
 <div class="container" style="padding:30px">
-    <div class="panel panel-default">
-        <div class="panel-heading">
+    <div class="panel panel-primary">
+        <div class="panel-heading" @*style="background-image: url('/assets/img/sidebar-4.jpg');background-repeat: no-repeat;opacity: 0.5;background-size:1150px;"*@>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     Customer Name: <textarea id="CustomerName" placeholder="Customer Name" class="form-control" style="height:100px;width:100%"></textarea>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    Branch: <input type="text" disabled value="Lahore Branch" class="form-control" /><br />
+                    Contact: <input type="text" disabled value="0423777875" class="form-control" />
+                </div>
+                <div class="col-md-4">
                     <div class="row">
-                        Cashire: <input type="text" disabled id="CashierName" value="Cashier abc" class="form-control" />
+                        Cashire: <input type="text" disabled id="CashierName" value="@User.Identity.Name" class="form-control" />
                         <br />
-                        Time: <input type="datetime" class="form-control" />
+                        Time: <input type="text" disabled id="CurrentTime" class="form-control" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="panel-body"> 
             <div id="Products">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Product Name:</label> 
+                    </div>
+                    <div class="col-md-2">
+                        <label>Quantity:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Price:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <label>In Stock Items:</label>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
                 <div class="row Product" id="Product1">
-                    <div class="col-md-3">
-                        Product Name:
-                        <input type="text" id="ProductValue1" placeholder="Enter Product Name or Id" style="position:unset" class="form-control ui-autocomplete" /><input hidden id='SelectedProductId1' onchange="UpdateQuantity(1)">
+                    <div class="col-md-4">
+                        <input type="text" id="ProductValue1" onchange="UpdateQuantity(1)" placeholder="Enter Product Name or Id" style="position:unset" class="form-control ui-autocomplete" /><input hidden id='SelectedProductId1'>
                     </div>
-                    <div class="col-md-3">
-                        Quantity: <input type="number" id="Quantity1" class="form-control" value="0" onchange="UpdatePrice()"/>
+                    <div class="col-md-2">
+                        <input type="number" id="Quantity1" class="form-control" min="1" value="0" onchange="UpdatePrice(1)" disabled/>
                     </div>
-                    <div class="col-md-3">
-                        Price: <input type="number" id="Price1" class="form-control" disabled />
+                    <div class="col-md-2">
+                        <input type="number" id="Price1" class="form-control" disabled />
                     </div>
-                    <div class="col-md-3">
-                        Remove:<button class="btn btn-sm btn-danger form-control" id="RemoveProduct1" onclick="RemoveProduct('Product1')">X</button>
+                    <div class="col-md-2">
+                        <input type="number" id="InStock1" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-danger form-control" id="RemoveProduct1" onclick="RemoveProduct('1')">X</button>
                     </div>
                 </div><hr id="HrProduct1" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 pull-right" style="padding:10px">
+                    <label>Total Price:</label> <input type="number" id="TotalPrice" class="form-control" disabled />
+
+                </div>
             </div>
         </div>
         <div class="panel-footer">
             <div class="row">
-                <div class="col-md-4">
-                    <button class="btn btn-primary form-control" id="AddNewProduct" onclick="AddProductRow()">+</button>
+                <div class="col-md-2 pull-left">
+                    <button class="btn btn-primary form-control" id="AddNewProduct" onclick="AddProductRow()">Add Product</button>
                 </div>
-                <div class="col-md-4">
-                    Total Price: <input type="number" id="TotalPrice" class="form-control" disabled/>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-2 pull-right">
                     <button class="btn btn-primary form-control" id="SubmitForm" onclick="SubmitForm()">Confirm Order</button>
                 </div>
             </div>
@@ -53,8 +82,25 @@
 
 <script>
 
-    $(document).ready(function () {
-        
+    jQuery(document).ready(function () {
+
+        function startTime() {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('CurrentTime').value =
+            h + ":" + m + ":" + s;
+            var t = setTimeout(startTime, 500);
+        }
+        function checkTime(i) {
+            if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+            return i;
+        }
+
+        startTime();
         $("#ProductValue1").autocomplete({
             source: function (request, response) {
                 $.ajax({
@@ -65,7 +111,7 @@
                     success: function (data) {
                         response($.map(data,
                             function (item) {
-                                $('#SelectedProductId1').val(item.Id);
+                                //$('#SelectedProductId1').val(item.Id);
                                 return { label: item.Name, value: item.Name };
                             }));
 
@@ -90,19 +136,22 @@
         var newProductNo = parseInt(totalProducts) + 1;
         var removalFunc = "RemoveProduct('Product" + newProductNo + "')";
         $("#Products").append("<div class='row Product' id='Product" + newProductNo + "'>" +
-                    "<div class='col-md-3'>" +
-                        "Product Name:" +
-                        "<input type='text' id='ProductValue" + newProductNo + "' style='position:unset' placeholder='Enter Product Name or Id' class='form-control ui-autocomplete' /><input hidden id='SelectedProductId"+newProductNo+"'  onchange='UpdateQuantity("+newProductNo+")'>" +
-                        "</div>" +
-                    "<div class='col-md-3'>" +
-                            "Quantity: <input type='number' value='0' id='Quantity" + newProductNo + "' class='form-control' />" +
-                        "</div>" +
-                    "<div class='col-md-3'>" +
-                        "Price: <input type='number' id='Price"+newProductNo+"' class='form-control' disabled/>" +
-                    "</div>" +
-                    "<div class='col-md-3'>" +
-                            "Remove:<button class='btn btn-sm btn-danger form-control' id='RemoveProduct" + newProductNo + "' onclick="+removalFunc+">X</button>" +
-                    "</div></div><hr id='HrProduct'" + newProductNo + ">");
+                     "<div class='col-md-4'>"+
+                        "<input type='text' id='ProductValue" + newProductNo + "' onchange='UpdateQuantity(" + newProductNo + ")' placeholder='Enter Product Name or Id' style='position:unset' class='form-control ui-autocomplete' />"+"<input hidden id='SelectedProductId" + newProductNo + "'>"+
+                    "</div>"+
+                    "<div class='col-md-2'>"+
+                        "<input type='number' id='Quantity" + newProductNo + "' class='form-control' min='1' value='0' onchange='UpdatePrice(" + newProductNo + ")' disabled/>"+
+                    "</div>"+
+                    "<div class='col-md-2'>"+
+                        "<input type='number' id='Price" + newProductNo + "' class='form-control' disabled />"+
+                    "</div>"+
+                    "<div class='col-md-2'>"+
+                        "<input type='number' id='InStock" + newProductNo + "' class='form-control' disabled />"+
+                    "</div>"+
+                    "<div class='col-md-2'>"+
+                        "<button class='btn btn-sm btn-danger form-control' id='RemoveProduct" + newProductNo + "' onclick='RemoveProduct(" + newProductNo + ")'>X</button>"+
+                    "</div>"+
+            "</div><hr id='HrProduct" + newProductNo + "'>");
         $("#TotalProducts").val(newProductNo);
 
 
@@ -132,46 +181,36 @@
             }
         });
 
-        debugger;
-        var prodId = parseInt($("#ProductValue" + newProductNo).val().replace(/[^\d.]/g, ''))
-        $('#SelectedProductId' + newProductNo).val(prodId);
-        $.ajax({
-            url: "/Products/GetPrice",
-            type: "POST",
-            dataType: "json",
-            data: { Id: prodId },
-            success: function (data) {
-                debugger;
-                var quantity = (parseInt($("#Quantity" + newProductNo).val()) == 0) ? 1 : (parseInt($("#Quantity" + newProductNo).val()) + 1);
-                $("#Quantity" + newProductNo).val(quantity)
-                $("#Price" + newProductNo).val(data * quantity);
 
-            }
-        });
-       
+
     }
 
-    
+
 
     function RemoveProduct(id)
     {
-        $("#" + id).remove()
-        $("#Hr" + id).remove()
+        var DetailCounter = parseInt(id);
+
+        var totalPrice = parseInt($("#TotalPrice").val()) - parseInt($("#Price" + DetailCounter).val());
+        $("#TotalPrice").val(totalPrice);
+        $("#Product" + id).remove();
+        $("#HrProduct" + id).remove();
     }
 
     function SubmitForm()
     {
         var CustomerName = $("#CustomerName").val();
         var DetailCounter = 1;
+        var TotalPrice = $("#TotalPrice").val();
         var OrderDetails = [];
         $(".Product").each(function () {
-            var DetailCounter = $(this).attr("id"); 
+            var DetailCounter = $(this).attr("id");
             DetailCounter = parseInt(DetailCounter.replace(/[^\d.]/g, ''));
             OrderDetail = {
                 Id: '',
                 OrderId: '',
                 ProductId: $("#SelectedProductId" + DetailCounter).val(),
-                Price: '',
+                Price: $("#Price" + DetailCounter).val(),
                 Quantity: $("#Quantity" + DetailCounter).val()
             }
             OrderDetails.push(OrderDetail);
@@ -180,13 +219,10 @@
             url: "/Orders/SubmitOrder",
             type: "POST",
             dataType: "json",
-            data: {CustomerName: CustomerName, OrderDetails: OrderDetails},
+            data: { CustomerName: CustomerName, TotalPrice: TotalPrice, OrderDetails: OrderDetails },
             success: function (data) {
-                response($.map(data,
-                    function (item) {
-                        $('#SelectedProductId' + newProductNo).val(item.Id);
-                        return { label: item.Name, value: item.Name };
-                    }));
+                if (data == "Success")
+                    window.location.reload();
 
             }
         });
@@ -195,6 +231,69 @@
 
 
 
+    function UpdateQuantity(item)
+    {
+        var strs = $("#ProductValue" + item).val().split("-");
+        var prodId = parseInt(strs[0]);
+        $('#SelectedProductId' + item).val(prodId);
+       $.ajax({
+            url: "/Products/GetPrice",
+            type: "POST",
+            dataType: "json",
+            data: { Id: prodId },
+            success: function (data) {
+                if (data.Quantity > 0)
+                {
+                    var quantity = 1;//(parseInt($("#Quantity" + item).val()) == 0) ? 1 : (parseInt($("#Quantity" + item).val()) + 1);
+                    $("#Quantity" + item).val(quantity);
+                    $("#Price" + item).val(data.Price * quantity);
+                    $("#InStock" + item).val(data.Quantity);
+                    $("#Quantity" + item).attr("max", data.Quantity);
+                    $("#Quantity" + item).removeAttr("disabled");
+
+                }
+                else
+                {
+                    alert("Product out of stock!");
+                    $("#Price" + item).val(0);
+                    $("#InStock" + item).val(0);
+                    $("#Quantity" + item).attr("max", 0);
+
+                }
+                var totalPrice = 0;
+                $(".Product").each(function () {
+                    var DetailCounter = $(this).attr("id");
+                    DetailCounter = parseInt(DetailCounter.replace(/[^\d.]/g, ''));
+                    totalPrice = totalPrice + parseInt($("#Price" + DetailCounter).val());
+                    
+                });
+                $("#TotalPrice").val(totalPrice);
+
+            }
+        });
+    }
 
 
+
+    function UpdatePrice(id)
+    {
+        var strs = $("#ProductValue" + id).val().split("-");
+        var prodId = parseInt(strs[0]);
+        $.ajax({
+            url: "/Products/GetPrice",
+            type: "POST",
+            dataType: "json",
+            data: { Id: prodId },
+            success: function (data) {
+                var currentPrice = parseInt($("#Price" + id).val());
+                var currentQuantity = parseInt($("#Quantity" + id).val());
+                var origPrice = data.Price;
+                var netPrice = origPrice * currentQuantity;
+                var totalSubPrice = parseInt($("#TotalPrice").val()) - currentPrice;
+                $("#Price" + id).val(netPrice);
+                $("#TotalPrice").val(totalSubPrice + netPrice);
+            }
+        });
+    }
+   
 </script>

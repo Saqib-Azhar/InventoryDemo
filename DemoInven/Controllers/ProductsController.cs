@@ -196,12 +196,13 @@ namespace DemoInven.Controllers
         {
             try
             {
-                if (ProductsStaticList.Count == 0 || ProductsStaticList == null)
-                {
+                //if (ProductsStaticList.Count == 0 || ProductsStaticList == null)
+                //{
                     ProductsStaticList = db.Products.ToList();
-                }
-                var prod = ProductsStaticList.Find(s=>s.Id == Id);
-                return Json(prod.Price, JsonRequestBehavior.AllowGet);
+                //}
+                var prod = ProductsStaticList.Find(s => s.Id == Id);
+                var list = new { prod.Price, prod.Quantity, prod.CategoryId, prod.ProductDescription };
+                return Json(list, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {

@@ -23,8 +23,8 @@ namespace DemoInven.Models
             this.Orders = new HashSet<Order>();
             this.Products = new HashSet<Product>();
             this.Stocks = new HashSet<Stock>();
-            this.Suppliers = new HashSet<Supplier>();
             this.AspNetRoles = new HashSet<AspNetRole>();
+            this.Suppliers = new HashSet<Supplier>();
         }
     
         public string Id { get; set; }
@@ -53,8 +53,8 @@ namespace DemoInven.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Stock> Stocks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Supplier> Suppliers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Supplier> Suppliers { get; set; }
     }
 }

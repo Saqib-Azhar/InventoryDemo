@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DemoInven.Models;
+using Microsoft.AspNet.Identity;
 
 namespace DemoInven.Controllers
 {
@@ -28,12 +29,12 @@ namespace DemoInven.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Stock stock = db.Stocks.Find(id);
-            if (stock == null)
+            var stockDetails = db.StockDetails.Where(a=>a.StockId == id);
+            if (stockDetails == null)
             {
                 return HttpNotFound();
             }
-            return View(stock);
+            return View(stockDetails);
         }
 
         // GET: Stocks/Create
@@ -41,6 +42,7 @@ namespace DemoInven.Controllers
         {
             ViewBag.CreatedBy = new SelectList(db.AspNetUsers, "Id", "Email");
             ViewBag.SupplierId = new SelectList(db.Suppliers, "Id", "Name");
+            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "CategoryName");
             return View();
         }
 
@@ -131,6 +133,77 @@ namespace DemoInven.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        [HttpPost]
+        public JsonResult AddStock(Stock StockDetails, List<Product> ProductsDetails)
+        {
+            try
+            {
+                var stockObj = new Stock();
+                stockObj.StockName = StockDetails.StockName;
+                stockObj.StockDescription = StockDetails.StockDescription;
+                stockObj.CreatedBy = User.Identity.GetUserId();
+                stockObj.CreatedOn = DateTime.Now;
+                stockObj.IsDelete = false;
+                stockObj.SupplierId = StockDetails.SupplierId;
+                db.Stocks.Add(stockObj);
+                db.SaveChanges();
+                foreach (var item in ProductsDetails)
+                {
+                    if(item.Id == 0)
+                    {
+                        Product prodObj = new Product();
+                        prodObj.ProductName = item.ProductName;
+                        prodObj.IsDelete = false;
+                        prodObj.ProductDescription = item.ProductDescription;
+                        prodObj.Quantity = item.Quantity;
+                        prodObj.StockNo = stockObj.Id;
+                        prodObj.Price = item.Price;
+                        prodObj.CreatedBy = User.Identity.GetUserId();
+                        prodObj.CreatedOn = DateTime.Now;
+                        prodObj.BarCode = null;
+                        db.Products.Add(prodObj);
+                        db.SaveChanges();
+
+                        StockDetail detailObj = new StockDetail();
+                        detailObj.ProductId = prodObj.Id;
+                        detailObj.QuantityAdded = item.Quantity;
+                        detailObj.StockId = stockObj.Id;
+                        db.StockDetails.Add(detailObj);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        Product prodObj = db.Products.FirstOrDefault(d=>d.Id == item.Id);
+                        prodObj.ProductName = item.ProductName;
+                        prodObj.IsDelete = false;
+                        prodObj.ProductDescription = item.ProductDescription;
+                        prodObj.Quantity = prodObj.Quantity + item.Quantity;
+                        prodObj.StockNo = stockObj.Id;
+                        prodObj.Price = item.Price;
+                        db.SaveChanges();
+
+                        StockDetail detailObj = new StockDetail();
+                        detailObj.ProductId = prodObj.Id;
+                        detailObj.QuantityAdded = item.Quantity;
+                        detailObj.StockId = stockObj.Id;
+                        db.StockDetails.Add(detailObj);
+                        db.SaveChanges();
+                        
+
+                    }
+
+                }
+
+
+                return Json("Success");
+            }
+            catch (Exception)
+            {
+                return Json("Something went wrong!");
+            }
         }
     }
 }

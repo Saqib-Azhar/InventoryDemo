@@ -29,8 +29,8 @@ namespace DemoInven.Models
         public Nullable<int> SupplierId { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Supplier Supplier { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StockDetail> StockDetails { get; set; }
+        public virtual Supplier Supplier { get; set; }
     }
 }

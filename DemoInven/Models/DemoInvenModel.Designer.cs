@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\sazhar\Desktop\DemoInven\DemoInven\Models\DemoInvenModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\sazhar\Source\Repos\InventoryDemo\DemoInven\Models\DemoInvenModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
